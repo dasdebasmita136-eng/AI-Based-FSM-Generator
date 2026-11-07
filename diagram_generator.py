@@ -1,4 +1,6 @@
+
 from graphviz import Digraph
+
 
 def create_diagram(fsm_data):
 
@@ -31,32 +33,73 @@ def create_diagram(fsm_data):
         arrowsize="0.8"
     )
 
-    # Starting point
+    # Starting point as a small black dot
     dot.node(
         "start",
-        shape="none",
-        label=""
+        shape="point",
+        width="0.15",
+        height="0.15",
+        fillcolor="black"
     )
 
     initial = fsm_data["initial_state"]
+    final_states = fsm_data.get("final_states", [])
 
-    # Create states
+    # Traffic light colours
+    traffic_colors = {
+        "red": "#FF6666",
+        "green": "#66CC66",
+        "yellow": "#FFD966"
+    }
+
+    state_names = [state.lower() for state in fsm_data["states"]]
+
+    is_traffic_light = all(
+        color in state_names
+        for color in traffic_colors
+    )
+
+    # Create FSM states
     for state in fsm_data["states"]:
 
-        if state == initial:
+        # Traffic light states
+        if is_traffic_light and state.lower() in traffic_colors:
+
+            dot.node(
+                state,
+                label=state,
+                shape="doublecircle" if state in final_states else "circle",
+                fillcolor=traffic_colors[state.lower()]
+            )
+
+        # Initial state
+        elif state == initial:
+
+            dot.node(
+                state,
+                label=state,
+                shape="doublecircle" if state in final_states else "circle",
+                fillcolor="#B7E4C7"
+            )
+
+        # Final states
+        elif state in final_states:
+
             dot.node(
                 state,
                 label=state,
                 shape="doublecircle",
-                fillcolor="#B7E4C7"
+                fillcolor="#FFE2B8"
             )
 
+        # Normal states
         else:
+
             dot.node(
                 state,
                 label=state,
                 shape="circle",
-                fillcolor="#DDEBFF"
+                fillcolor="#CDE7FF"
             )
 
     # Arrow to initial state

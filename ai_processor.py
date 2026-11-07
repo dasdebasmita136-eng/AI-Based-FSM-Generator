@@ -19,14 +19,16 @@ def generate_fsm(description):
 
     1. All states
     2. Initial state
-    3. Transitions between states
-    4. Input or condition for each transition
+    3. Final states, if any
+    4. Transitions between states
+    5. Input or condition for each transition
 
     Return the result ONLY as valid JSON in this format:
 
     {{
         "states": ["State1", "State2"],
         "initial_state": "State1",
+        "final_states": ["State2"],
         "transitions": [
             {{
                 "from": "State1",
@@ -35,6 +37,8 @@ def generate_fsm(description):
             }}
         ]
     }}
+
+    If there are no final states, return an empty list.
 
     System description:
     {description}
